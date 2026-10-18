@@ -17,10 +17,10 @@ impl Resource {
         }
     }
 
-    pub(crate) async fn get<Type, Params>(
+    pub(crate) async fn get_with_params<Type, Params>(
         &self,
         path: impl Into<String>,
-        params: Option<Params>,
+        params: Params,
     ) -> Result<Type, Error>
     where
         Type: DeserializeOwned,
@@ -35,6 +35,7 @@ impl Resource {
         }
 
         let response = request
+            .query(&params)
             .send()
             .await?
             .error_for_status()?
@@ -42,5 +43,12 @@ impl Resource {
             .await?;
 
         Ok(response)
+    }
+
+    pub(crate) async fn get<Type>(&self, path: impl Into<String>) -> Result<Type, Error>
+    where
+        Type: DeserializeOwned,
+    {
+        self.get_with_params(path, ()).await
     }
 }
