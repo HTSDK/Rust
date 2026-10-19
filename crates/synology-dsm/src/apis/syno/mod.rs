@@ -13,6 +13,7 @@ mod entry;
 mod secure_sign_in;
 mod security_advisor;
 mod synology_drive_share_sync;
+mod resource_monitor;
 
 pub struct Syno {
     api: Arc<API>,
