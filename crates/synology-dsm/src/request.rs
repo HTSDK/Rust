@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 
@@ -21,10 +21,23 @@ impl Request {
         }
     }
 
-    pub fn params(mut self, key: impl Into<String>, value: Value) -> Self {
+    pub fn param(mut self, key: impl Into<String>, value: Value) -> Self {
         let mut params = self.params.unwrap_or_else(|| HashMap::new());
         params.insert(key.into(), value);
         self.params = Some(params);
+        self
+    }
+
+    pub fn params<P>(mut self, params: P) -> Self where P: Serialize {
+        if let Ok(Value::Object(map)) = serde_json::to_value(params) {
+            let existing = self.params.get_or_insert_with(HashMap::new);
+            existing.extend(map);
+        }
+        self
+    }
+
+    pub fn path(mut self, path: impl Into<String>) -> Self {
+        self.path = path.into();
         self
     }
 }

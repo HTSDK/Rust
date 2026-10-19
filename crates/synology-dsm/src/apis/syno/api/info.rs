@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 #[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all = "UPPERCASE")]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum RequestFormat {
     Json,
 }
@@ -37,7 +37,7 @@ impl SynoApiInfo {
             .unwrap_or_else(|| "all".to_string());
         self.api
             .request(
-                Request::new("SYNO.API.Info", "query", 1).params("query", Value::String(query)),
+                Request::new("SYNO.API.Info", "query", 1).param("query", Value::String(query)),
             )
             .await
     }
